@@ -6,6 +6,31 @@ import { RideCard, type RideCardData } from '@/components/RideCard';
 import { todayISO, toRideCardData } from '@/lib/utils';
 import type { RideType, PickupZone } from '@/lib/types';
 
+
+type DemoRide = {
+  id: string;
+  pickup: string;
+  destination: string;
+  time: string;
+  seats: number;
+  vehicle: string;
+  fare: string;
+  note: string;
+};
+
+const DEMO_RIDES: Record<RideType, DemoRide[]> = {
+  GOING_TO_COLLEGE: [
+    { id: 'demo-guindy-metro', pickup: 'Guindy Metro Station, Guindy', destination: 'SRMIST Vadapalani — C Block, 100 Feet Road (near SIMS Hospital)', time: '07:45 AM', seats: 3, vehicle: 'Maruti Swift · Hatchback', fare: '₹80/person (demo)', note: 'Illustrative sample — not a real booking' },
+    { id: 'demo-guindy-rail', pickup: 'Guindy Railway Station, station entrance', destination: 'SRMIST Vadapalani — C Block, 100 Feet Road (near SIMS Hospital)', time: '08:10 AM', seats: 2, vehicle: 'Hyundai i20 · Hatchback', fare: '₹90/person (demo)', note: 'Illustrative sample — not a real booking' },
+    { id: 'demo-guindy-estate', pickup: 'Guindy Industrial Estate Bus Stand', destination: 'SRMIST Vadapalani — C Block, 100 Feet Road (near SIMS Hospital)', time: '08:25 AM', seats: 3, vehicle: 'Honda Amaze · Sedan', fare: '₹100/person (demo)', note: 'Illustrative sample — not a real booking' },
+  ],
+  RETURNING_FROM_COLLEGE: [
+    { id: 'demo-srm-vadapalani-metro', pickup: 'SRMIST Vadapalani — C Block, 100 Feet Road', destination: 'Guindy Metro Station, Guindy', time: '04:15 PM', seats: 3, vehicle: 'Maruti Swift · Hatchback', fare: '₹80/person (demo)', note: 'Illustrative sample — not a real booking' },
+    { id: 'demo-srm-guindy-rail', pickup: 'SRMIST Vadapalani — near SIMS Hospital', destination: 'Guindy Railway Station, station entrance', time: '05:00 PM', seats: 2, vehicle: 'Hyundai i20 · Hatchback', fare: '₹90/person (demo)', note: 'Illustrative sample — not a real booking' },
+    { id: 'demo-srm-guindy-estate', pickup: 'Vadapalani Metro Station, Vadapalani', destination: 'Guindy Industrial Estate Bus Stand', time: '05:30 PM', seats: 3, vehicle: 'Honda Amaze · Sedan', fare: '₹100/person (demo)', note: 'Illustrative sample — not a real booking' },
+  ],
+};
+
 export function FindRidePage({
   rideType,
   title,
@@ -177,40 +202,80 @@ export function FindRidePage({
         <Spinner />
       ) : error ? (
         <ErrorState message={error} onRetry={loadRides} />
-      ) : rides.length === 0 ? (
-        <EmptyState
-          icon={<Bus className="h-8 w-8 text-slate-300" />}
-          title={hasFilters ? 'No rides match your filters' : 'No rides available'}
-          message={
-            hasFilters
-              ? 'Try adjusting or clearing your filters to see more rides.'
-              : 'There are no active rides for this direction right now. Check back later or post one yourself.'
-          }
-          action={
-            hasFilters ? (
-              <button
-                onClick={clearFilters}
-                className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-700"
-              >
-                Clear Filters
-              </button>
-            ) : undefined
-          }
-        />
       ) : (
         <>
-          <p className="mb-4 text-sm text-slate-500">
-            {rides.length} ride{rides.length !== 1 ? 's' : ''} found
-          </p>
-          <div className="grid gap-4 md:grid-cols-2">
-            {rides.map((ride) => (
-              <RideCard
-                key={ride.ride.id}
-                data={ride}
-                onClick={() => onNavigate(`/ride/${ride.ride.id}`)}
-              />
-            ))}
+          {rides.length > 0 && (
+            <>
+              <p className="mb-4 text-sm text-slate-500">
+                {rides.length} real ride{rides.length !== 1 ? 's' : ''} posted by users
+              </p>
+              <div className="mb-8 grid gap-4 md:grid-cols-2">
+                {rides.map((ride) => (
+                  <RideCard
+                    key={ride.ride.id}
+                    data={ride}
+                    onClick={() => onNavigate(`/ride/${ride.ride.id}`)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
+          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Sample rides for preview</h2>
+              <p className="text-sm text-slate-500">Real local landmarks · fictional demo schedules and fares</p>
+            </div>
+            <span className="inline-flex w-fit items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">DEMO ONLY · NOT BOOKABLE</span>
           </div>
+          <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            These sample listings demonstrate the interface only. Drivers, times, seat counts and fares are fictional examples; they are not live availability or confirmed prices.
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {DEMO_RIDES[rideType]
+              .filter((sample) => {
+                if (zoneFilter === 'all') return true;
+                const selectedZone = zones.find((zone) => zone.id === zoneFilter)?.name.toLowerCase() || '';
+                return sample.pickup.toLowerCase().includes(selectedZone) || selectedZone.includes('guindy') && sample.pickup.toLowerCase().includes('guindy') || selectedZone.includes('srmist') && sample.pickup.toLowerCase().includes('srmist') || selectedZone.includes('vadapalani') && sample.pickup.toLowerCase().includes('vadapalani');
+              })
+              .filter((sample) => !timeFilter || (() => {
+                const [time, period] = sample.time.split(' ');
+                let [hour, minute] = time.split(':').map(Number);
+                if (period === 'PM' && hour !== 12) hour += 12;
+                if (period === 'AM' && hour === 12) hour = 0;
+                return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}` >= timeFilter;
+              })())
+              .map((sample) => (
+                <article key={sample.id} className="overflow-hidden rounded-2xl border border-amber-200 bg-white shadow-sm">
+                  <div className="flex items-center justify-between gap-3 border-b border-amber-100 bg-amber-50 px-5 py-3">
+                    <span className="text-sm font-bold text-slate-800">{rideType === 'GOING_TO_COLLEGE' ? 'Home area → College' : 'College → Home area'}</span>
+                    <span className="rounded-full bg-amber-200 px-2.5 py-1 text-[10px] font-extrabold tracking-wide text-amber-900">SAMPLE</span>
+                  </div>
+                  <div className="space-y-4 p-5">
+                    <div>
+                      <p className="mb-1 text-[11px] font-bold uppercase tracking-wide text-slate-400">Pickup</p>
+                      <p className="text-sm font-semibold text-slate-900">{sample.pickup}</p>
+                    </div>
+                    <div>
+                      <p className="mb-1 text-[11px] font-bold uppercase tracking-wide text-slate-400">Drop-off</p>
+                      <p className="text-sm font-semibold text-slate-900">{sample.destination}</p>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3 border-t border-slate-100 pt-4">
+                      <div><p className="text-[11px] text-slate-400">Departure</p><p className="text-sm font-semibold text-slate-800">{sample.time}</p></div>
+                      <div><p className="text-[11px] text-slate-400">Seats</p><p className="text-sm font-semibold text-slate-800">{sample.seats} (demo)</p></div>
+                      <div><p className="text-[11px] text-slate-400">Fare</p><p className="text-sm font-semibold text-slate-800">{sample.fare}</p></div>
+                    </div>
+                    <div className="flex items-center justify-between gap-3 rounded-lg bg-slate-50 px-3 py-2">
+                      <span className="text-xs text-slate-600">{sample.vehicle}</span>
+                      <span className="text-[10px] font-semibold text-amber-700">Not bookable</span>
+                    </div>
+                  </div>
+                </article>
+              ))}
+          </div>
+          {rides.length === 0 && (
+            <p className="mt-5 text-sm text-slate-500">No real user-posted rides match this search yet. The sample cards above are for demonstration only.</p>
+          )}
         </>
       )}
     </PageContainer>
