@@ -57,7 +57,7 @@ export function RegisterPage({ onNavigate }: { onNavigate: (path: string) => voi
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
-      <div className="w-full max-w-lg">
+      <div className="w-full max-w-2xl">
         <div className="mb-8 text-center">
           <button onClick={() => onNavigate('/')} className="inline-flex items-center gap-2.5">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-600 shadow-sm">
@@ -67,8 +67,8 @@ export function RegisterPage({ onNavigate }: { onNavigate: (path: string) => voi
           </button>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-          <h1 className="mb-1 text-2xl font-bold text-slate-900">Create Account</h1>
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+          <h1 className="mb-1 text-2xl font-bold text-slate-900">{role === 'DRIVER' ? 'Set up your driver account' : 'Join your campus ride community'}</h1>
           <p className="mb-6 text-sm text-slate-500">{role === 'DRIVER' ? 'Create a driver profile to share journeys and manage your vehicle.' : 'Create a passenger profile to find campus rides and request a seat.'}</p>
 
           {error && (
@@ -94,7 +94,7 @@ export function RegisterPage({ onNavigate }: { onNavigate: (path: string) => voi
                   <Users className={`h-5 w-5 ${role === 'PASSENGER' ? 'text-sky-600' : 'text-slate-400'}`} />
                   <div className="text-left">
                     <span className="block text-sm font-semibold text-slate-800">Passenger</span>
-                    <span className="block text-xs text-slate-500">Find & book rides</span>
+                    <span className="block text-xs text-slate-500">Find rides · Request seats</span>
                   </div>
                 </button>
                 <button
@@ -109,7 +109,7 @@ export function RegisterPage({ onNavigate }: { onNavigate: (path: string) => voi
                   <Car className={`h-5 w-5 ${role === 'DRIVER' ? 'text-sky-600' : 'text-slate-400'}`} />
                   <div className="text-left">
                     <span className="block text-sm font-semibold text-slate-800">Driver</span>
-                    <span className="block text-xs text-slate-500">Post & manage rides</span>
+                    <span className="block text-xs text-slate-500">Add vehicle · Offer seats</span>
                   </div>
                 </button>
               </div>
@@ -273,7 +273,7 @@ export function RegisterPage({ onNavigate }: { onNavigate: (path: string) => voi
               disabled={loading}
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-sky-600 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 disabled:opacity-60"
             >
-              {loading ? 'Creating account...' : 'Create Account'}
+              {loading ? 'Creating account...' : role === 'DRIVER' ? 'Create Driver Account' : 'Create Passenger Account'}
               {!loading && <ArrowRight className="h-4 w-4" />}
             </button>
           </form>
