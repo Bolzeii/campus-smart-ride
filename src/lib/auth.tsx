@@ -15,6 +15,12 @@ interface AuthContextValue {
     college: string;
     homeLocation: string;
     collegeLocation: string;
+    studentId: string;
+    vehicleMake: string;
+    vehicleModel: string;
+    plateNumber: string;
+    vehicleColor: string;
+    vehicleCapacity: string;
     role: UserRole;
   }) => Promise<{ error: string | null }>;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
@@ -103,6 +109,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           college: params.college,
           home_location: params.homeLocation,
           college_location: params.collegeLocation,
+          student_id: params.studentId,
+          vehicle_make: params.vehicleMake,
+          vehicle_model: params.vehicleModel,
+          plate_number: params.plateNumber,
+          vehicle_color: params.vehicleColor,
+          vehicle_capacity: params.vehicleCapacity,
           role: params.role,
         },
       },
