@@ -13,6 +13,8 @@ interface AuthContextValue {
     fullName: string;
     phone: string;
     college: string;
+    homeLocation: string;
+    collegeLocation: string;
     role: UserRole;
   }) => Promise<{ error: string | null }>;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
@@ -99,6 +101,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           full_name: params.fullName,
           phone: params.phone,
           college: params.college,
+          home_location: params.homeLocation,
+          college_location: params.collegeLocation,
           role: params.role,
         },
       },
