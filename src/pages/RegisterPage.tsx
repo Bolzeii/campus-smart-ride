@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Bus, Mail, Lock, User, Phone, GraduationCap, ArrowRight, Car, Users } from 'lucide-react';
+import { Bus, Mail, Lock, User, Phone, GraduationCap, MapPin, ArrowRight, Car, Users } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import type { UserRole } from '@/lib/types';
 
@@ -8,7 +8,9 @@ export function RegisterPage({ onNavigate }: { onNavigate: (path: string) => voi
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [college, setCollege] = useState('');
+  const [college, setCollege] = useState('SRM Institute of Science and Technology');
+  const [homeLocation, setHomeLocation] = useState('');
+  const [collegeLocation, setCollegeLocation] = useState('Vadapalani, Chennai');
   const [role, setRole] = useState<UserRole>('PASSENGER');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -29,7 +31,7 @@ export function RegisterPage({ onNavigate }: { onNavigate: (path: string) => voi
     }
 
     setLoading(true);
-    const { error } = await signUp({ email, password, fullName, phone, college, role });
+    const { error } = await signUp({ email, password, fullName, phone, college, homeLocation, collegeLocation, role });
     setLoading(false);
     if (error) {
       setError(error);
@@ -140,6 +142,38 @@ export function RegisterPage({ onNavigate }: { onNavigate: (path: string) => voi
                   placeholder="SRM Institute of Science and Technology"
                   className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
                 />
+              </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="mb-1.5 block text-sm font-semibold text-slate-700">Home Area / Locality</label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    required
+                    value={homeLocation}
+                    onChange={(e) => setHomeLocation(e.target.value)}
+                    placeholder="e.g. Guindy, Chennai"
+                    className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                  />
+                </div>
+                <p className="mt-1 text-xs text-slate-400">Area or nearby landmark only — no house number.</p>
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-semibold text-slate-700">Campus / College Area</label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    required
+                    value={collegeLocation}
+                    onChange={(e) => setCollegeLocation(e.target.value)}
+                    placeholder="e.g. Vadapalani, Chennai"
+                    className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                  />
+                </div>
               </div>
             </div>
 
