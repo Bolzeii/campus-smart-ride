@@ -36,13 +36,13 @@ export function LandingPage({ onNavigate }: { onNavigate: (path: string) => void
                 <div><p className="text-sm font-bold text-white">Live route map</p><p className="mt-1 text-xs text-slate-400">Guindy Metro Station → SRMIST Vadapalani</p></div>
                 <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-amber-300/30 bg-amber-300/10 px-2.5 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-200"><span className="h-1.5 w-1.5 rounded-full bg-amber-300" /> Demo ride</span>
               </div>
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-white">
+              {mapExpanded && <div className="overflow-hidden rounded-2xl border border-white/10 bg-white">
                 <iframe title="Map route from Guindy Metro Station to SRMIST Vadapalani" className="h-64 w-full sm:h-72" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?output=embed&saddr=Guindy+Metro+Station,+Chennai,+Tamil+Nadu&daddr=SRM+Institute+of+Science+and+Technology,+Vadapalani,+Chennai,+Tamil+Nadu" />
                 <div className="flex items-center justify-between gap-3 border-t border-slate-100 px-3 py-2.5 sm:px-4">
                   <p className="text-[11px] leading-4 text-slate-500">Map preview · Route may vary with traffic</p>
                   <a className="inline-flex shrink-0 items-center gap-1 text-xs font-bold text-sky-700 hover:text-sky-900" href="https://www.google.com/maps/dir/?api=1&origin=Guindy+Metro+Station,+Chennai&destination=SRM+Institute+of+Science+and+Technology,+Vadapalani,+Chennai&travelmode=driving" target="_blank" rel="noreferrer">Open directions <ExternalLink className="h-3.5 w-3.5" /></a>
                 </div>
-              </div>
+              </div>}
               <div className="mt-3 rounded-2xl bg-white p-4 sm:p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div><p className="text-[10px] font-extrabold uppercase tracking-[.18em] text-sky-700">Sample listing · Not bookable</p><h3 className="mt-1 text-lg font-extrabold text-slate-950">Morning campus commute</h3><p className="mt-1 text-xs text-slate-500">Illustrative details for preview only</p></div>
