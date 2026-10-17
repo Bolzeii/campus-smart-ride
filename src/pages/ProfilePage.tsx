@@ -9,6 +9,8 @@ export function ProfilePage({ onNavigate }: { onNavigate: (path: string) => void
   const { profile, session, refreshProfile } = useAuth();
   const [fullName, setFullName] = useState(profile?.full_name || '');
   const [phone, setPhone] = useState(profile?.phone || '');
+  const [homeLocation, setHomeLocation] = useState(profile?.home_location || '');
+  const [collegeLocation, setCollegeLocation] = useState(profile?.college_location || '');
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -53,7 +55,12 @@ export function ProfilePage({ onNavigate }: { onNavigate: (path: string) => void
 
     const { error } = await supabase
       .from('profiles')
-      .update({ full_name: fullName, phone: phone || null })
+      .update({
+        full_name: fullName,
+        phone: phone || null,
+        home_location: homeLocation.trim() || null,
+        college_location: collegeLocation.trim() || null,
+      })
       .eq('id', profile.id);
 
     setSaving(false);
@@ -184,6 +191,31 @@ export function ProfilePage({ onNavigate }: { onNavigate: (path: string) => void
                   />
                 </div>
                 <p className="mt-1 text-xs text-slate-400">College cannot be changed after registration.</p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1.5 block text-sm font-semibold text-slate-700">Home Area / Town</label>
+                  <input
+                    type="text"
+                    value={homeLocation}
+                    onChange={(e) => setHomeLocation(e.target.value)}
+                    placeholder="e.g. Tambaram, Chennai"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                  />
+                  <p className="mt-1 text-xs text-slate-400">Enter your area or nearest landmark, not your house number.</p>
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-semibold text-slate-700">College Location / Area</label>
+                  <input
+                    type="text"
+                    value={collegeLocation}
+                    onChange={(e) => setCollegeLocation(e.target.value)}
+                    placeholder="e.g. Potheri, Chennai"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                  />
+                  <p className="mt-1 text-xs text-slate-400">Add the campus area or a nearby landmark.</p>
+                </div>
               </div>
 
               <div>
