@@ -11,6 +11,13 @@ export function RegisterPage({ onNavigate }: { onNavigate: (path: string) => voi
   const [college, setCollege] = useState('SRM Institute of Science and Technology');
   const [homeLocation, setHomeLocation] = useState('');
   const [collegeLocation, setCollegeLocation] = useState('Vadapalani, Chennai');
+  const [vehicleMake, setVehicleMake] = useState('');
+  const [vehicleModel, setVehicleModel] = useState('');
+  const [plateNumber, setPlateNumber] = useState('');
+  const [vehicleColor, setVehicleColor] = useState('');
+  const [vehicleCapacity, setVehicleCapacity] = useState('4');
+  const [studentId, setStudentId] = useState('');
+  const [agreeSafety, setAgreeSafety] = useState(false);
   const [role, setRole] = useState<UserRole>('PASSENGER');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -25,13 +32,21 @@ export function RegisterPage({ onNavigate }: { onNavigate: (path: string) => voi
       setError('Passwords do not match.');
       return;
     }
+    if (role === 'DRIVER' && (!vehicleMake.trim() || !vehicleModel.trim() || !plateNumber.trim())) {
+      setError('Add your vehicle make, model and registration number to create a driver account.');
+      return;
+    }
+    if (!agreeSafety) {
+      setError('Please confirm your details and agree to the campus ride safety guidelines.');
+      return;
+    }
     if (password.length < 6) {
       setError('Password must be at least 6 characters long.');
       return;
     }
 
     setLoading(true);
-    const { error } = await signUp({ email, password, fullName, phone, college, homeLocation, collegeLocation, role });
+    const { error } = await signUp({ email, password, fullName, phone, college, homeLocation, collegeLocation, role, studentId, vehicleMake, vehicleModel, plateNumber, vehicleColor, vehicleCapacity });
     setLoading(false);
     if (error) {
       setError(error);
@@ -54,7 +69,7 @@ export function RegisterPage({ onNavigate }: { onNavigate: (path: string) => voi
 
         <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
           <h1 className="mb-1 text-2xl font-bold text-slate-900">Create Account</h1>
-          <p className="mb-6 text-sm text-slate-500">Join the campus ride-sharing community.</p>
+          <p className="mb-6 text-sm text-slate-500">{role === 'DRIVER' ? 'Create a driver profile to share journeys and manage your vehicle.' : 'Create a passenger profile to find campus rides and request a seat.'}</p>
 
           {error && (
             <div className="mb-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
@@ -145,6 +160,30 @@ export function RegisterPage({ onNavigate }: { onNavigate: (path: string) => voi
               </div>
             </div>
 
+
+            {role === 'PASSENGER' ? (
+              <div className="rounded-xl border border-sky-100 bg-sky-50/70 p-4">
+                <h3 className="mb-1 text-sm font-bold text-slate-900">Student details</h3>
+                <p className="mb-3 text-xs text-slate-600">Optional student ID helps identify your campus profile.</p>
+                <label className="mb-1.5 block text-sm font-semibold text-slate-700">Student ID (optional)</label>
+                <input type="text" value={studentId} onChange={(e) => setStudentId(e.target.value)} placeholder="College ID number" className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200" />
+                <p className="mt-1.5 text-xs text-slate-500">Do not enter sensitive identity or financial information.</p>
+              </div>
+            ) : (
+              <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-4">
+                <h3 className="mb-1 text-sm font-bold text-slate-900">Driver & vehicle details</h3>
+                <p className="mb-3 text-xs text-slate-600">Required to set up your driver profile. You can update these later.</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div><label className="mb-1.5 block text-sm font-semibold text-slate-700">Vehicle make *</label><input required type="text" value={vehicleMake} onChange={(e) => setVehicleMake(e.target.value)} placeholder="e.g. Maruti Suzuki" className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" /></div>
+                  <div><label className="mb-1.5 block text-sm font-semibold text-slate-700">Model *</label><input required type="text" value={vehicleModel} onChange={(e) => setVehicleModel(e.target.value)} placeholder="e.g. Swift" className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" /></div>
+                  <div><label className="mb-1.5 block text-sm font-semibold text-slate-700">Registration number *</label><input required type="text" value={plateNumber} onChange={(e) => setPlateNumber(e.target.value.toUpperCase())} placeholder="e.g. TN 01 AB 1234" className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm uppercase outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" /></div>
+                  <div><label className="mb-1.5 block text-sm font-semibold text-slate-700">Vehicle colour</label><input type="text" value={vehicleColor} onChange={(e) => setVehicleColor(e.target.value)} placeholder="e.g. White" className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" /></div>
+                  <div><label className="mb-1.5 block text-sm font-semibold text-slate-700">Total seats including driver</label><select value={vehicleCapacity} onChange={(e) => setVehicleCapacity(e.target.value)} className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-emerald-500">{[2,3,4,5,6,7,8].map((n) => <option key={n} value={n}>{n} seats</option>)}</select></div>
+                </div>
+                <p className="mt-2 text-xs text-emerald-800">Only list a vehicle you are authorised to drive and seats legally available for passengers.</p>
+              </div>
+            )}
+
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-sm font-semibold text-slate-700">Home Area / Locality</label>
@@ -222,6 +261,12 @@ export function RegisterPage({ onNavigate }: { onNavigate: (path: string) => voi
                 </div>
               </div>
             </div>
+
+
+            <label className="flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600">
+              <input type="checkbox" required checked={agreeSafety} onChange={(e) => setAgreeSafety(e.target.checked)} className="mt-0.5 h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500" />
+              <span>I confirm these details are accurate and agree to follow campus ride safety rules. I understand registration alone does not verify student status, driving licence or vehicle documents.</span>
+            </label>
 
             <button
               type="submit"
