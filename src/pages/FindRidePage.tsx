@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Search, Filter, MapPin, Calendar, Clock, X, Bus } from 'lucide-react';
+import { Filter, MapPin, Calendar, Clock, X, Bus } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-import { PageContainer, PageHeader, Spinner, EmptyState, ErrorState } from '@/components/ui';
+import { PageContainer, PageHeader, Spinner, ErrorState } from '@/components/ui';
 import { RideCard, type RideCardData } from '@/components/RideCard';
 import { todayISO, toRideCardData } from '@/lib/utils';
 import type { RideType, PickupZone } from '@/lib/types';
