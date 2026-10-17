@@ -1,6 +1,9 @@
-import { Bus, Shield, MapPin, Users, ArrowRight, CheckCircle2, Lock, Route, Clock, Car, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
+import { Bus, Shield, MapPin, Users, ArrowRight, CheckCircle2, Lock, Route, Clock, Car, ChevronDown, ExternalLink, Navigation, Info } from 'lucide-react';
 
 export function LandingPage({ onNavigate }: { onNavigate: (path: string) => void }) {
+  const [showRideDetails, setShowRideDetails] = useState(false);
+  const [mapExpanded, setMapExpanded] = useState(true);
   return (
     <div className="min-h-screen bg-white text-slate-900">
       <header className="relative isolate overflow-hidden bg-slate-950">
@@ -28,14 +31,42 @@ export function LandingPage({ onNavigate }: { onNavigate: (path: string) => void
           </div>
           <div className="relative mx-auto w-full max-w-xl">
             <div className="absolute -inset-5 rounded-[2rem] bg-sky-400/10 blur-2xl" />
-            <div className="relative rounded-[1.75rem] border border-white/15 bg-white/[0.07] p-4 shadow-2xl backdrop-blur sm:p-5">
-              <div className="flex items-center justify-between border-b border-white/10 px-2 pb-4"><div><p className="text-sm font-bold text-white">Commute preview</p><p className="mt-1 text-xs text-slate-400">Example route · Chennai</p></div><span className="rounded-full border border-amber-300/30 bg-amber-300/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-200">Demo</span></div>
-              <div className="mt-5 rounded-2xl bg-white p-5">
-                <div className="flex items-start gap-3"><div className="flex flex-col items-center pt-1"><span className="h-3 w-3 rounded-full border-[3px] border-sky-500 bg-white" /><span className="my-1 h-12 border-l-2 border-dashed border-slate-300" /><span className="h-3 w-3 rounded-full bg-emerald-500 ring-4 ring-emerald-50" /></div><div className="min-w-0 flex-1"><p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Pickup area</p><p className="mt-1 font-bold text-slate-900">Guindy Metro Station</p><p className="mb-5 mt-1 text-xs text-slate-500">Meet at a public landmark</p><p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Destination</p><p className="mt-1 font-bold text-slate-900">SRMIST Vadapalani</p><p className="mt-1 text-xs text-slate-500">Campus area · Chennai</p></div></div>
-                <div className="mt-5 grid grid-cols-3 gap-2 border-t border-slate-100 pt-4"><div className="rounded-xl bg-slate-50 p-3"><Clock className="h-4 w-4 text-sky-600" /><p className="mt-2 text-[10px] text-slate-500">Departure</p><p className="text-sm font-bold text-slate-800">7:45 AM*</p></div><div className="rounded-xl bg-slate-50 p-3"><Users className="h-4 w-4 text-sky-600" /><p className="mt-2 text-[10px] text-slate-500">Seats</p><p className="text-sm font-bold text-slate-800">3*</p></div><div className="rounded-xl bg-slate-50 p-3"><Shield className="h-4 w-4 text-emerald-600" /><p className="mt-2 text-[10px] text-slate-500">Listing</p><p className="text-sm font-bold text-slate-800">Demo only</p></div></div>
-                <p className="mt-3 text-[10px] leading-4 text-slate-400">*Illustrative example only — not a real ride, driver, or confirmed availability.</p>
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-white/15 bg-white/[0.07] p-3 shadow-2xl backdrop-blur sm:p-4">
+              <div className="flex items-center justify-between gap-3 px-2 pb-3">
+                <div><p className="text-sm font-bold text-white">Live route map</p><p className="mt-1 text-xs text-slate-400">Guindy Metro Station → SRMIST Vadapalani</p></div>
+                <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-amber-300/30 bg-amber-300/10 px-2.5 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-200"><span className="h-1.5 w-1.5 rounded-full bg-amber-300" /> Demo ride</span>
               </div>
-              <div className="mt-3 flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3.5"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-400/10"><Shield className="h-5 w-5 text-emerald-300" /></span><div><p className="text-sm font-semibold text-white">Privacy-conscious by design</p><p className="mt-1 text-xs text-slate-400">Use public pickup points instead of sharing your house address.</p></div></div>
+              <div className="overflow-hidden rounded-2xl border border-white/10 bg-white">
+                <iframe title="Map route from Guindy Metro Station to SRMIST Vadapalani" className="h-64 w-full sm:h-72" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?output=embed&saddr=Guindy+Metro+Station,+Chennai,+Tamil+Nadu&daddr=SRM+Institute+of+Science+and+Technology,+Vadapalani,+Chennai,+Tamil+Nadu" />
+                <div className="flex items-center justify-between gap-3 border-t border-slate-100 px-3 py-2.5 sm:px-4">
+                  <p className="text-[11px] leading-4 text-slate-500">Map preview · Route may vary with traffic</p>
+                  <a className="inline-flex shrink-0 items-center gap-1 text-xs font-bold text-sky-700 hover:text-sky-900" href="https://www.google.com/maps/dir/?api=1&origin=Guindy+Metro+Station,+Chennai&destination=SRM+Institute+of+Science+and+Technology,+Vadapalani,+Chennai&travelmode=driving" target="_blank" rel="noreferrer">Open directions <ExternalLink className="h-3.5 w-3.5" /></a>
+                </div>
+              </div>
+              <div className="mt-3 rounded-2xl bg-white p-4 sm:p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div><p className="text-[10px] font-extrabold uppercase tracking-[.18em] text-sky-700">Sample listing · Not bookable</p><h3 className="mt-1 text-lg font-extrabold text-slate-950">Morning campus commute</h3><p className="mt-1 text-xs text-slate-500">Illustrative details for preview only</p></div>
+                  <span className="rounded-lg bg-amber-50 px-2 py-1 text-[10px] font-bold text-amber-800 ring-1 ring-amber-200">DEMO DATA</span>
+                </div>
+                <div className="mt-4 grid grid-cols-3 gap-2">
+                  <div className="rounded-xl bg-slate-50 p-3"><Clock className="h-4 w-4 text-sky-700" /><p className="mt-2 text-[10px] text-slate-500">Example time</p><p className="text-sm font-extrabold text-slate-900">7:45 AM</p></div>
+                  <div className="rounded-xl bg-slate-50 p-3"><Users className="h-4 w-4 text-sky-700" /><p className="mt-2 text-[10px] text-slate-500">Example seats</p><p className="text-sm font-extrabold text-slate-900">3 seats</p></div>
+                  <div className="rounded-xl bg-slate-50 p-3"><Car className="h-4 w-4 text-emerald-700" /><p className="mt-2 text-[10px] text-slate-500">Driver</p><p className="text-sm font-extrabold text-slate-900">Sample</p></div>
+                </div>
+                {showRideDetails && <div className="mt-4 rounded-xl border border-slate-200 p-3.5 text-sm">
+                  <div className="flex items-start gap-3"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-sky-700" /><div><p className="font-bold text-slate-800">Pickup</p><p className="mt-0.5 text-slate-600">Guindy Metro Station, Chennai</p></div></div>
+                  <div className="my-3 ml-2 h-4 border-l border-dashed border-slate-300" />
+                  <div className="flex items-start gap-3"><Navigation className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700" /><div><p className="font-bold text-slate-800">Drop-off</p><p className="mt-0.5 text-slate-600">SRMIST Vadapalani campus area, Chennai</p></div></div>
+                  <div className="mt-3 flex items-start gap-2 rounded-lg bg-amber-50 p-2.5 text-xs leading-5 text-amber-900"><Info className="mt-0.5 h-4 w-4 shrink-0" />This is a fictional preview. No real driver, vehicle, seats, or booking is associated with it.</div>
+                </div>}
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <button onClick={() => setShowRideDetails(!showRideDetails)} className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-700 transition hover:border-sky-300 hover:bg-sky-50">{showRideDetails ? 'Hide details' : 'View ride details'} <ChevronDown className={`h-4 w-4 transition ${showRideDetails ? 'rotate-180' : ''}`} /></button>
+                  <button onClick={() => onNavigate('/find-ride')} className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-3 py-3 text-sm font-bold text-white transition hover:bg-sky-700">Find real rides <ArrowRight className="h-4 w-4" /></button>
+                </div>
+                <p className="mt-3 text-center text-[10px] leading-4 text-slate-400">The demo card is not an actual ride listing. Real availability appears only in Find Rides.</p>
+              </div>
+              <button onClick={() => setMapExpanded(!mapExpanded)} className="mt-3 flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left text-xs font-semibold text-slate-200 transition hover:bg-white/10"><span className="inline-flex items-center gap-2"><Navigation className="h-4 w-4 text-sky-300" /> {mapExpanded ? 'Map visible' : 'Map hidden'} · Guindy to Vadapalani</span><ChevronDown className={`h-4 w-4 transition ${mapExpanded ? 'rotate-180' : ''}`} /></button>
+              {!mapExpanded && <p className="px-2 pt-2 text-xs text-slate-400">Open Google Maps directions above to view the route.</p>}
             </div>
           </div>
         </div>
